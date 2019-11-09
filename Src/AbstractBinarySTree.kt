@@ -4,22 +4,38 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
     open var root: Node<T>? = null
 
     override fun clear() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        root = null
     }
 
     /**
      * Return true if tree isEmpty or false
      */
     override fun isEmpty(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return root == null
     }
 
-    override fun contains(element: T): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    /**
+     * Return true if tree contain element or false
+     */
+    override operator fun contains(element: T): Boolean {
+        return search(element, root)
+    }
+
+    private fun search(t: T, root: Node<T>?): Boolean {
+        return when {
+            root == null -> false // element is not found
+            t < root.value -> search(t, root.left) // Search left subtree
+            t > root.value -> search(t, root.right) // Search right subtree
+            else -> true
+        } // element is found
     }
 
     override fun containsAll(elements: Collection<T>): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (elements.isEmpty()) return false
+        for (`object` in elements) {
+            if (!contains(`object`)) return false
+        }
+        return true
     }
 
     override fun remove(element: T): Boolean {
