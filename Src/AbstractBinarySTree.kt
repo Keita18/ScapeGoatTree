@@ -23,9 +23,9 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
 
     private fun search(t: T, root: Node<T>?): Boolean {
         return when {
-            root == null -> false // element is not found
-            t < root.value -> search(t, root.left) // Search left subtree
-            t > root.value -> search(t, root.right) // Search right subtree
+            root == null -> false                         // element is not found
+            t < root.value -> search(t, root.left)       // Search left subtree
+            t > root.value -> search(t, root.right)     // Search right subtree
             else -> true
         } // element is found
     }
@@ -37,17 +37,62 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
         }
         return true
     }
-
+    /**
+     * fun to remove element from tree
+     */
     override fun remove(element: T): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (contains(element)) {
+            root = delete(root, element)
+            return true
+        }
+        return false
+    }
+
+    private fun delete(currentRoot: Node<T>?, toDelete: T): Node<T> ?{
+        when {
+            currentRoot == null -> throw RuntimeException("cannot delete.")
+            toDelete < currentRoot.value -> currentRoot.left = delete(currentRoot.left, toDelete)
+            toDelete > currentRoot.value -> currentRoot.right = delete(currentRoot.right, toDelete)
+            else -> when {
+                currentRoot.left == null -> return currentRoot.right
+                currentRoot.right == null -> return currentRoot.left
+                else -> {
+                    // get data from the rightmost node in the left subtree
+                    currentRoot.value = retrieveData(currentRoot.left!!)
+                    // delete the rightmost node in the left subtree
+                    currentRoot.left = delete(currentRoot.left, currentRoot.value)
+                }
+            }
+        }
+        return currentRoot
+    }
+    private fun retrieveData(currentRoot: Node<T>): T {
+        var p = currentRoot
+        while (p.right != null) p = p.right!!
+
+        return p.value
     }
 
     override fun removeAll(elements: Collection<T>): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (elements.isEmpty()) return false
+        for (t in elements) {
+            if (contains(t)) {
+                remove(t)
+            } else
+                return false
+        }
+        return true
     }
 
     override fun retainAll(elements: Collection<T>): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (elements.isEmpty()) return false
+        val list = ArrayList<T>()
+        for (element in elements) {
+            if (contains(element)) {
+                list.add(element)
+            }
+        }
+        return addAll(list)
     }
 
     /**
@@ -57,7 +102,10 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
      * @throws NoSuchElementException if this set is empty
      */
     override fun first(): T {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var node = root ?: throw NoSuchElementException()
+        while (node.left != null)
+            node = node.left!!
+        return node.value
     }
 
     /**
@@ -67,7 +115,10 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
      * @throws NoSuchElementException if this set is empty
      */
     override fun last(): T {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var node = root ?: throw NoSuchElementException()
+        while (node.right != null)
+            node = node.right!!
+        return node.value
     }
 
     /**
