@@ -156,6 +156,52 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
     }
 
     override fun iterator(): MutableIterator<T> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return BinaryTreeIterator()
+    }
+
+    inner class BinaryTreeIterator internal constructor() : MutableIterator<T> {
+
+        private var stack: Stack<Node<T>>
+
+        init {
+            var node = root
+            stack = Stack()
+            while (node != null) {
+                stack.push(node)
+                node = node.left
+            }
+        }
+
+        /**
+         * Check for the following element
+         */
+        override fun hasNext(): Boolean {
+            return stack.isNotEmpty()
+        }
+
+        /**
+         * Search for the next element
+         */
+        private var result: T? = null
+
+        override fun next(): T {
+            var node = stack.pop()
+            result = node.value
+            if (node.right != null) {
+                node = node.right
+                while (node != null) {
+                    stack.push(node)
+                    node = node.left
+                }
+            }
+            return result!!
+        }
+
+        /**
+         * Delete the next element
+         */
+        override fun remove() {
+            this@AbstractBinarySTree.remove(result)
+        }
     }
 }
