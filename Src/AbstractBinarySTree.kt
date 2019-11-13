@@ -126,21 +126,21 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
      * from fromElement, inclusive, to toElement, exclusive
      */
     override fun subSet(fromElement: T, toElement: T): SortedSet<T> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return GenericSortedSet(fromElement, toElement, this)
     }
 
     /**
      * Returns a view of the portion of this set whose elemenSare strictly less than toElement
      */
     override fun headSet(toElement: T): SortedSet<T> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return GenericSortedSet(null, toElement, this)
     }
 
     /**
      * Returns a view of the portion of this set whose elements are greater than or equal to fromElement
      */
     override fun tailSet(fromElement: T): SortedSet<T> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return GenericSortedSet(fromElement, null, this)
     }
 
     /**
