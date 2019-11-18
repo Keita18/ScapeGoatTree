@@ -1,5 +1,4 @@
 import java.util.*
-
 class GenericSortedSet<T : Comparable<T>>(
         private val fromElement: T?,                 //up border
         private val toElement: T?,                  //bottom border
@@ -20,39 +19,52 @@ class GenericSortedSet<T : Comparable<T>>(
         return GenericSortedSet(fromElement, null, delegate)
     }
 
+    /**
+     * Time Complexity O(n) in worst cage
+     * Memory Complexity O(1)
+     */
     override fun first(): T? {
         val iterator = delegate.iterator()
         var currentFirst: T? = null
         while (iterator.hasNext() && currentFirst == null) {
             val nextElement = iterator.next()
-            if (checkBounds(nextElement) && this.contains(nextElement)) {
+            if (checkInRange(nextElement) && this.contains(nextElement)) {
                 currentFirst = nextElement
             }
         }
         return currentFirst
     }
 
+    /**
+     * Time Complexity in worst case O(n-1) -> O(n) - n number of element in KtBinary
+     * if toElement == KtBinary.last
+     * Memory Complexity O(1)
+     */
     override fun last(): T? {
         val iterator = delegate.iterator()
         var currentLast: T? = null
         while (iterator.hasNext()) {
             val nextElement = iterator.next()
-            if (checkBounds(nextElement) && this.contains(nextElement)) {
+            if (checkInRange(nextElement) && this.contains(nextElement)) {
                 currentLast = nextElement
             }
         }
         return currentLast
     }
 
-
+    /**
+     * contains, add, remove
+     * Time Complexity O(h) - h height of tree
+     * Memory Complexity O(1)
+     */
     override operator fun contains(element: T): Boolean {
-        if (!checkBounds(element))
+        if (!checkInRange(element))
             return false
         return delegate.contains(element)
     }
 
     override fun add(element: T): Boolean {
-        if (checkBounds(element)) {
+        if (checkInRange(element)) {
             delegate.add(element)
             return true
         } else throw IllegalArgumentException()
@@ -74,30 +86,46 @@ class GenericSortedSet<T : Comparable<T>>(
         init {
             while (delegate.hasNext()) {
                 val next = delegate.next()
-                if (checkBounds(next)) {
+                if (checkInRange(next)) {
                     this.next = next
                     break
                 }
             }
         }
 
+        /**
+         * Time Complexity O(1)
+         * Memory Complexity O(1)
+         */
         override fun hasNext(): Boolean {
             return next != null
         }
 
+        /**
+         * Time Complexity O(1)
+         * Memory Complexity O(1)
+         */
         override fun next(): T {
             val result = next ?: throw NoSuchElementException()
-            next = if (delegate.hasNext()) delegate.next() else null
+            next = if (delegate.hasNext()) {
+                val nextElement = delegate.next()
+                if (checkInRange(nextElement))
+                    nextElement
+                else null
+            } else null
             return result
         }
 
+        /**
+         * like in KtBinary tree
+         */
         override fun remove() {
             delegate.remove()
         }
 
     }
 
-    private fun checkBounds(value: T): Boolean {
+    private fun checkInRange(value: T): Boolean {
         return if (fromElement != null && toElement != null)
             toElement > value && fromElement <= value
         else if (fromElement == null)
@@ -106,7 +134,11 @@ class GenericSortedSet<T : Comparable<T>>(
             fromElement <= value
     }
 
+    /**
+     * Time Complexity O(n) - n element in binary
+     * Memory Complexity O(1)
+     */
     override val size: Int
-        get() = delegate.count { checkBounds(it) }
+        get() = delegate.count { checkInRange(it) }
 
 }

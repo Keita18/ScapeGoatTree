@@ -18,16 +18,21 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
      * Return true if tree contain element or false
      */
     override operator fun contains(element: T): Boolean {
-        return search(element, root)
+        val closest = find(element)
+        return closest != null && element.compareTo(closest.value) == 0
     }
 
-    private fun search(t: T, root: Node<T>?): Boolean {
+    fun find(value: T): Node<T>? =
+            root?.let { find(it, value) }
+
+
+    private fun find(start: Node<T>, value: T): Node<T> {
+        val comparison = value.compareTo(start.value)
         return when {
-            root == null -> false                         // element is not found
-            t < root.value -> search(t, root.left)       // Search left subtree
-            t > root.value -> search(t, root.right)     // Search right subtree
-            else -> true
-        } // element is found
+            comparison == 0 -> start
+            comparison < 0 -> start.left?.let { find(it, value) } ?: start
+            else -> start.right?.let { find(it, value) } ?: start
+        }
     }
 
     override fun containsAll(elements: Collection<T>): Boolean {
@@ -41,36 +46,41 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
      * fun to remove element from tree
      */
     override fun remove(element: T): Boolean {
-        if (contains(element)) {
-            root = delete(root, element)
-            return true
+        val toDelete: Node<T>? = find(element) ?: return false
+
+        if (toDelete!!.left == null || toDelete.right == null)
+            splice(toDelete)
+        else {
+            var minRight = toDelete.right
+
+            while (minRight!!.left != null) // time complexity in worst O(h)
+                minRight = minRight.left
+
+            toDelete.value = minRight.value
+            splice(minRight)
         }
-        return false
+        return true
     }
 
-    private fun delete(currentRoot: Node<T>?, toDelete: T): Node<T> ?{
+    private fun splice(toDelete: Node<T>) {
+        val parent: Node<T>?
+        var change: Node<T>? = null
         when {
-            currentRoot == null -> throw RuntimeException("cannot delete.")
-            toDelete < currentRoot.value -> currentRoot.left = delete(currentRoot.left, toDelete)
-            toDelete > currentRoot.value -> currentRoot.right = delete(currentRoot.right, toDelete)
-            else -> when {
-                currentRoot.left == null -> return currentRoot.right
-                currentRoot.right == null -> return currentRoot.left
-                else -> {
-                    // get data from the rightmost node in the left subtree
-                    currentRoot.value = retrieveData(currentRoot.left!!)
-                    // delete the rightmost node in the left subtree
-                    currentRoot.left = delete(currentRoot.left, currentRoot.value)
-                }
+            toDelete.left != null -> change = toDelete.left!!
+            toDelete.right != null -> change = toDelete.right!!
+        }
+        if (toDelete == root) {
+            root = change
+            parent = null
+        } else {
+            parent = toDelete.parent
+            when (toDelete) {
+                parent?.left -> parent.left = change
+                parent?.right -> parent.right = change
             }
         }
-        return currentRoot
-    }
-    private fun retrieveData(currentRoot: Node<T>): T {
-        var p = currentRoot
-        while (p.right != null) p = p.right!!
-
-        return p.value
+        if (change != null)
+            change.parent = parent
     }
 
     override fun removeAll(elements: Collection<T>): Boolean {
