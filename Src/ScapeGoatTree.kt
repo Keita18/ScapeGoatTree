@@ -1,3 +1,5 @@
+import kotlin.math.ln
+
 class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(){
     override var root: Node<T>? = super.root
     private var nodesNumber = 0
@@ -12,37 +14,136 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(){
         get() = nodesNumber
 
 
+    fun height(): Int = subTreeSize(root, true)
+
+
     /**
      * Adds the specified element to the set.
      *
      * @return `true` if the element has been added, `false` if the element is already contained in the set.
      */
     override fun add(element: T): Boolean {
-        val closest = super.find(element)
-        val comparison = if (closest == null) -1 else element.compareTo(closest.value)
-        if (comparison == 0) {
-            return false
-        }
         val newNode = Node(element)
-        when {
-            closest == null -> root = newNode
-            comparison < 0 -> {
-                assert(closest.left == null)
-                closest.left = newNode
-                newNode.parent = closest
-            }
-            else -> {
-                assert(closest.right == null)
-                closest.right = newNode
-                newNode.parent = closest
-            }
+        val depth = addWithDepth(newNode)
+        val check = ln(q.toDouble()) / ln(3.0 / 2.0)
+
+        if (depth > check) {
+
+            /** depth exceeded, find scapegoat */
+            var scapeG = newNode.parent
+            while (3 * subTreeSize(scapeG) <= 2 * subTreeSize(scapeG!!.parent))
+                scapeG = scapeG.parent
+            rebuild(scapeG.parent)
         }
+        return depth >= 0
+    }
+
+    private fun addWithDepth(newNode: Node<T>): Int {
+        var current = root
+        if (current == null) {
+            root = newNode
+            nodesNumber++
+            q++
+            return 0
+        }
+        var done = false
+        var depth = 0
+        do {
+            if (newNode.value < current!!.value) {
+                if (current.left == null) {
+                    current.left = newNode
+                    newNode.parent = current
+                    done = true
+                } else {
+                    current = current.left
+                }
+            } else if (newNode.value > current.value) {
+                if (current.right == null) {
+                    current.right = newNode
+                    newNode.parent = current
+                    done = true
+                }
+                current = current.right
+            } else {
+                return -1
+            }
+            depth++
+        } while (!done)
         nodesNumber++
+        q++
+        return depth
+    }
+
+
+
+    override fun addAll(elements: Collection<T>): Boolean {
+        if (elements.isEmpty())
+            return false
+
+        for (element in elements) {
+            val test = add(element)
+            if (!test)
+                return false
+        }
         return true
     }
 
-    override fun addAll(elements: Collection<T>): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    /** Function to count number of nodes */
+    private fun subTreeSize(node: Node<T>?, checkHeight: Boolean = false): Int {
+        if (node == null) return 0
+        val leftNodeCount = subTreeSize(node.left)
+        val rightNodeCount = subTreeSize(node.right)
+
+        return 1 + if (!checkHeight)  leftNodeCount + rightNodeCount // subTreeSize
+        else  kotlin.math.max(leftNodeCount, rightNodeCount)    // height
+    }
+
+    /**Function to rebuild tree from node u */
+    private fun rebuild(node: Node<T>?) {
+        val nodeSize = subTreeSize(node)
+        val parent = node!!.parent
+        val array = arrayOfNulls<Node<T>?>(nodeSize)
+        packIntoArray(node, array, 0)
+        when {
+            parent == null -> {
+                root = buildBalanced(array, 0, nodeSize)
+                root!!.parent = null
+            }
+            parent.right == node -> {
+                parent.right = buildBalanced(array, 0, nodeSize)
+                parent.right!!.parent = parent
+            }
+            else -> {
+                parent.left = buildBalanced(array, 0, nodeSize)
+                parent.left!!.parent = parent
+            }
+        }
+    }
+
+    /** Function to packIntoArray */
+    private fun packIntoArray(node: Node<T>?, array: Array<Node<T>?>, index: Int): Int {
+        var i = index
+        if (node == null) {
+            return i
+        }
+        i = packIntoArray(node.left, array, i)
+        array[i++] = node
+        return packIntoArray(node.right, array, i)
+    }
+
+    /** Function to build balanced nodes */
+    private fun buildBalanced(array: Array<Node<T>?>, index: Int, nodeSize: Int): Node<T>?{
+        if (nodeSize == 0)
+            return null
+        val m = nodeSize / 2
+        array[index + m]?.left = buildBalanced(array, index, m)
+        if (array[index + m]?.left != null)
+            array[index + m]?.left!!.parent = array[index + m]
+        array[index + m]?.right = buildBalanced(array, index + m + 1, nodeSize - m - 1)
+        if (array[index + m]?.right != null)
+            array[index + m]?.right!!.parent = array[index + m]
+        return array[index + m]
     }
 
 }
