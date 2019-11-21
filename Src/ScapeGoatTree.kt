@@ -1,8 +1,9 @@
 import kotlin.math.ln
+import kotlin.math.max
 
-class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(){
+class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSortedSet<T>{
     override var root: Node<T>? = super.root
-    private var nodesNumber = 0
+    override var nodesNumber = super.nodesNumber
     private var q = 0
 
     init {
@@ -10,11 +11,21 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(){
         nodesNumber = 0
     }
 
-    override val size: Int
-        get() = nodesNumber
 
 
-    fun height(): Int = subTreeSize(root, true)
+    override fun height(): Int = subTreeSize(root, true)
+
+
+    override fun checkInvariant(): Boolean =
+            root?.let { checkInvariant(it) } ?: true
+
+
+    private fun checkInvariant(node: Node<T>): Boolean {
+        val left = node.left
+        if (left != null && (left.value >= node.value || !checkInvariant(left))) return false
+        val right = node.right
+        return right == null || right.value > node.value && checkInvariant(right)
+    }
 
 
     /**
@@ -96,7 +107,7 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(){
         val rightNodeCount = subTreeSize(node.right)
 
         return 1 + if (!checkHeight)  leftNodeCount + rightNodeCount // subTreeSize
-        else  kotlin.math.max(leftNodeCount, rightNodeCount)    // height
+        else  max(leftNodeCount, rightNodeCount)    // height
     }
 
     /**Function to rebuild tree from node u */

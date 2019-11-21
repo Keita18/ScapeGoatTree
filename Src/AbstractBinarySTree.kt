@@ -6,7 +6,10 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
     override fun clear() {
         root = null
     }
+    open var nodesNumber = 0
 
+    override val size: Int
+        get() = nodesNumber
     /**
      * Return true if tree isEmpty or false
      */
@@ -81,6 +84,7 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
         }
         if (change != null)
             change.parent = parent
+        nodesNumber --
     }
 
     override fun removeAll(elements: Collection<T>): Boolean {

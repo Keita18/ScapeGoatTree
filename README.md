@@ -1,2 +1,2 @@
 # ScapegoatTree
-SGT Kotlin implem.
+SGT Kotlin implementation
