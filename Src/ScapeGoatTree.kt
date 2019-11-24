@@ -11,8 +11,6 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
         nodesNumber = 0
     }
 
-
-
     override fun height(): Int = subTreeSize(root, true)
 
 
@@ -157,4 +155,42 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
         return array[index + m]
     }
 
+    /** Function for InOrder traversal */
+    fun inOrder() {
+        inOrder(root)
+    }
+
+    private fun inOrder(r: Node<T>?) {
+        if (r != null) {
+            inOrder(r.left)
+            print(r.value.toString() + " ")
+            inOrder(r.right)
+        }
+    }
+
+    /** Function for PreOrder traversal */
+    fun preOrder() {
+        preOrder(root)
+    }
+
+    private fun preOrder(r: Node<T>?) {
+        if (r != null) {
+            print(r.value.toString() + " ")
+            preOrder(r.left)
+            preOrder(r.right)
+        }
+    }
+
+    /** Function for PostOrder traversal */
+    fun postOrder() {
+        postOrder(root)
+    }
+
+    private fun postOrder(r: Node<T>?) {
+        if (r != null) {
+            postOrder(r.left)
+            postOrder(r.right)
+            print(r.value.toString() + " ")
+        }
+    }
 }
