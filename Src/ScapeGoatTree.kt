@@ -4,7 +4,7 @@ import kotlin.math.max
 class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSortedSet<T>{
     override var root: Node<T>? = super.root
     override var nodesNumber = super.nodesNumber
-    private var q = 0
+    private var q = 0     //counter, q, that maintains an upper-bound on the number of nodes.
 
     init {
         root = null
