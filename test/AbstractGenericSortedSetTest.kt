@@ -1,8 +1,9 @@
+import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Tag
 
 
 import java.util.*
-import kotlin.test.*
 
 abstract class AbstractGenericSortedSetTest {
     private lateinit var tree: SortedSet<Int>
@@ -37,92 +38,92 @@ abstract class AbstractGenericSortedSetTest {
 
     protected fun doHeadSetTest() {
         var set: SortedSet<Int> = tree.headSet(5)
-        kotlin.test.assertEquals(true, set.contains(1))
-        kotlin.test.assertEquals(true, set.contains(2))
-        kotlin.test.assertEquals(true, set.contains(3))
-        kotlin.test.assertEquals(true, set.contains(4))
-        kotlin.test.assertEquals(false, set.contains(5))
-        kotlin.test.assertEquals(false, set.contains(6))
-        kotlin.test.assertEquals(false, set.contains(7))
-        kotlin.test.assertEquals(false, set.contains(8))
-        kotlin.test.assertEquals(false, set.contains(9))
-        kotlin.test.assertEquals(false, set.contains(10))
+        assertEquals(true, set.contains(1))
+        assertEquals(true, set.contains(2))
+        assertEquals(true, set.contains(3))
+        assertEquals(true, set.contains(4))
+        assertEquals(false, set.contains(5))
+        assertEquals(false, set.contains(6))
+        assertEquals(false, set.contains(7))
+        assertEquals(false, set.contains(8))
+        assertEquals(false, set.contains(9))
+        assertEquals(false, set.contains(10))
 
 
         set = tree.headSet(127)
         for (i in 1..10)
-            kotlin.test.assertEquals(true, set.contains(i))
+            assertEquals(true, set.contains(i))
 
     }
 
     protected fun doTailSetTest() {
         var set: SortedSet<Int> = tree.tailSet(5)
-        kotlin.test.assertEquals(false, set.contains(1))
-        kotlin.test.assertEquals(false, set.contains(2))
-        kotlin.test.assertEquals(false, set.contains(3))
-        kotlin.test.assertEquals(false, set.contains(4))
-        kotlin.test.assertEquals(true, set.contains(5))
-        kotlin.test.assertEquals(true, set.contains(6))
-        kotlin.test.assertEquals(true, set.contains(7))
-        kotlin.test.assertEquals(true, set.contains(8))
-        kotlin.test.assertEquals(true, set.contains(9))
-        kotlin.test.assertEquals(true, set.contains(10))
+        assertEquals(false, set.contains(1))
+        assertEquals(false, set.contains(2))
+        assertEquals(false, set.contains(3))
+        assertEquals(false, set.contains(4))
+        assertEquals(true, set.contains(5))
+        assertEquals(true, set.contains(6))
+        assertEquals(true, set.contains(7))
+        assertEquals(true, set.contains(8))
+        assertEquals(true, set.contains(9))
+        assertEquals(true, set.contains(10))
 
         set = tree.tailSet(-128)
         for (i in 1..10)
-            kotlin.test.assertEquals(true, set.contains(i))
+            assertEquals(true, set.contains(i))
 
     }
 
     protected fun doHeadSetRelationTest() {
         val set: SortedSet<Int> = tree.headSet(7)
-        kotlin.test.assertEquals(6, set.size)
-        kotlin.test.assertEquals(10, tree.size)
+        assertEquals(6, set.size)
+        assertEquals(10, tree.size)
         tree.add(0)
-        kotlin.test.assertTrue(set.contains(0))
+        assertTrue(set.contains(0))
         set.add(-2)
-        kotlin.test.assertTrue(tree.contains(-2))
+        assertTrue(tree.contains(-2))
         tree.add(12)
-        kotlin.test.assertFalse(set.contains(12))
-        assertFailsWith<IllegalArgumentException> { set.add(8) }
-        kotlin.test.assertEquals(8, set.size)
-        kotlin.test.assertEquals(13, tree.size)
+        assertFalse(set.contains(12))
+        assertFalse { set.add(8) }
+        assertEquals(8, set.size)
+        assertEquals(13, tree.size)
     }
 
     protected fun doTailSetRelationTest() {
         val set: SortedSet<Int> = tree.tailSet(4)
-        kotlin.test.assertEquals(7, set.size)
-        kotlin.test.assertEquals(10, tree.size)
+        assertEquals(7, set.size)
+        assertEquals(10, tree.size)
         tree.add(12)
-        kotlin.test.assertTrue(set.contains(12))
+        assertTrue(set.contains(12))
         set.add(42)
-        kotlin.test.assertTrue(tree.contains(42))
+        assertTrue(tree.contains(42))
         tree.add(0)
-        kotlin.test.assertFalse(set.contains(0))
-        assertFailsWith<IllegalArgumentException> { set.add(-2) }
-        kotlin.test.assertEquals(9, set.size)
-        kotlin.test.assertEquals(13, tree.size)
+        assertFalse(set.contains(0))
+        assertFalse { set.add(-2) }
+        assertEquals(9, set.size)
+        assertEquals(13, tree.size)
     }
 
     protected fun doSubSetTest() {
         val smallSet: SortedSet<Int> = tree.subSet(3, 8)
-        kotlin.test.assertEquals(false, smallSet.contains(1))
-        kotlin.test.assertEquals(false, smallSet.contains(2))
-        kotlin.test.assertEquals(true, smallSet.contains(3))
-        kotlin.test.assertEquals(true, smallSet.contains(4))
-        kotlin.test.assertEquals(true, smallSet.contains(5))
-        kotlin.test.assertEquals(true, smallSet.contains(6))
-        kotlin.test.assertEquals(true, smallSet.contains(7))
-        kotlin.test.assertEquals(false, smallSet.contains(8))
-        kotlin.test.assertEquals(false, smallSet.contains(9))
-        kotlin.test.assertEquals(false, smallSet.contains(10))
+        assertEquals(false, smallSet.contains(1))
+        assertEquals(false, smallSet.contains(2))
+        assertEquals(true, smallSet.contains(3))
+        assertEquals(true, smallSet.contains(4))
+        assertEquals(true, smallSet.contains(5))
+        assertEquals(true, smallSet.contains(6))
+        assertEquals(true, smallSet.contains(7))
+        assertEquals(false, smallSet.contains(8))
+        assertEquals(false, smallSet.contains(9))
+        assertEquals(false, smallSet.contains(10))
 
-        assertFailsWith<IllegalArgumentException> { smallSet.add(2) }
-        assertFailsWith<IllegalArgumentException> { smallSet.add(9) }
+        assertFalse { smallSet.add(2) }
+        assertFalse { smallSet.add(9) }
 
         val allSet = tree.subSet(-128, 128)
         for (i in 1..10)
-            kotlin.test.assertEquals(true, allSet.contains(i))
+            assertEquals(true, allSet.contains(i))
 
         val random = Random()
         val toElement = random.nextInt(randomTreeSize) + 1
@@ -130,26 +131,26 @@ abstract class AbstractGenericSortedSetTest {
 
         val randomSubset = randomTree.subSet(fromElement, toElement)
         randomValues.forEach { element ->
-            kotlin.test.assertEquals(element in fromElement until toElement, randomSubset.contains(element))
+            assertEquals(element in fromElement until toElement, randomSubset.contains(element))
         }
     }
 
     protected fun doSubSetRelationTest() {
         val set: SortedSet<Int> = tree.subSet(2, 15)
-        kotlin.test.assertEquals(9, set.size)
-        kotlin.test.assertEquals(10, tree.size)
+        assertEquals(9, set.size)
+        assertEquals(10, tree.size)
         tree.add(11)
-        kotlin.test.assertTrue(set.contains(11))
+        assertTrue(set.contains(11))
         set.add(14)
-        kotlin.test.assertTrue(tree.contains(14))
+        assertTrue(tree.contains(14))
         tree.add(0)
-        kotlin.test.assertFalse(set.contains(0))
+        assertFalse(set.contains(0))
         tree.add(15)
-        kotlin.test.assertFalse(set.contains(15))
-        assertFailsWith<IllegalArgumentException> { set.add(1) }
-        assertFailsWith<IllegalArgumentException> { set.add(20) }
-        kotlin.test.assertEquals(11, set.size)
-        kotlin.test.assertEquals(14, tree.size)
+        assertFalse(set.contains(15))
+        assertFalse { set.add(1) }
+        assertFalse { set.add(20) }
+        assertEquals(11, set.size)
+        assertEquals(14, tree.size)
     }
 
     protected fun doTestGenericSortedSetIterator() {
@@ -157,9 +158,9 @@ abstract class AbstractGenericSortedSetTest {
         val ktSortedSetTail = sortedSetOf<Int>()
         val ktSortedSetHead = sortedSetOf<Int>()
         val ktSortedSetSubset = sortedSetOf<Int>()
-
-        val fromElement = (1..24).random()
-        val toElement = (200..254).random()
+        val rand = Random()
+        val fromElement = rand.nextInt (24)
+        val toElement = rand.nextInt(29)
         for (i in 0..255 step fromElement) {
             scapeGoatTree.add(i)
             if (i < toElement)
@@ -174,12 +175,12 @@ abstract class AbstractGenericSortedSetTest {
         val subsetKtBinaryTree = scapeGoatTree.subSet(fromElement, toElement)
         val headKtBinaryTree = scapeGoatTree.headSet(toElement)
 
-        kotlin.test.assertEquals(ktSortedSetHead, headKtBinaryTree)
-        kotlin.test.assertEquals(ktSortedSetSubset, subsetKtBinaryTree)
+        assertEquals(ktSortedSetHead, headKtBinaryTree)
+        assertEquals(ktSortedSetSubset, subsetKtBinaryTree)
         assertEquals(ktBinaryTreeTail, ktBinaryTreeTail)
-        kotlin.test.assertEquals(ktSortedSetHead.last(), headKtBinaryTree.last())
-        kotlin.test.assertEquals(ktSortedSetTail.last(), ktBinaryTreeTail.last())
-        kotlin.test.assertEquals(subsetKtBinaryTree.size, ktSortedSetSubset.size)
+        assertEquals(ktSortedSetHead.last(), headKtBinaryTree.last())
+        assertEquals(ktSortedSetTail.last(), ktBinaryTreeTail.last())
+        assertEquals(subsetKtBinaryTree.size, ktSortedSetSubset.size)
         assertTrue(
                 subsetKtBinaryTree.contains(ktSortedSetSubset.max())
         )
@@ -193,7 +194,7 @@ abstract class AbstractGenericSortedSetTest {
             val treeSet = sortedSetOf<Int>()
             val sgtSubset = ScapeGoatTree<Int>().subSet(list.min()!!, list.max()!! + 1)
             val test = sgtSubset.iterator().hasNext()
-            kotlin.test.assertFalse(test, "Iterator of empty set should not have next element")
+           assertFalse(test, "Iterator of empty set should not have next element")
             for (element in list) {
                 treeSet += element
                 sgtSubset += element
@@ -216,6 +217,4 @@ abstract class AbstractGenericSortedSetTest {
             }
         }
     }
-
-
 }
