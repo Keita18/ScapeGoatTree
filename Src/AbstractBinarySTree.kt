@@ -1,15 +1,14 @@
 import java.util.*
 
-abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
+abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
     open var root: Node<T>? = null
 
     override fun clear() {
         root = null
     }
-    open var nodesNumber = 0
 
-    override val size: Int
-        get() = nodesNumber
+    override var size: Int = 0
+
     /**
      * Return true if tree isEmpty or false
      */
@@ -45,6 +44,7 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
         }
         return true
     }
+
     /**
      * fun to remove element from tree
      */
@@ -84,19 +84,9 @@ abstract class AbstractBinarySTree<T: Comparable<T>> : SortedSet<T> {
         }
         if (change != null)
             change.parent = parent
-        nodesNumber --
+        size--
     }
 
-    override fun removeAll(elements: Collection<T>): Boolean {
-        if (elements.isEmpty()) return false
-        for (t in elements) {
-            if (contains(t)) {
-                remove(t)
-            } else
-                return false
-        }
-        return true
-    }
 
     override fun retainAll(elements: Collection<T>): Boolean {
         if (elements.isEmpty()) return false

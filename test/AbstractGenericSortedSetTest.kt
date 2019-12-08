@@ -1,8 +1,4 @@
-import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Tag
-
-
 import java.util.*
 
 abstract class AbstractGenericSortedSetTest {
@@ -85,7 +81,7 @@ abstract class AbstractGenericSortedSetTest {
         assertTrue(tree.contains(-2))
         tree.add(12)
         assertFalse(set.contains(12))
-        assertFalse { set.add(8) }
+        assertThrows(IllegalArgumentException::class.java) { set.add(8) }
         assertEquals(8, set.size)
         assertEquals(13, tree.size)
     }
@@ -100,7 +96,8 @@ abstract class AbstractGenericSortedSetTest {
         assertTrue(tree.contains(42))
         tree.add(0)
         assertFalse(set.contains(0))
-        assertFalse { set.add(-2) }
+        assertThrows(IllegalArgumentException::class.java) { set.add(-2) }
+
         assertEquals(9, set.size)
         assertEquals(13, tree.size)
     }
@@ -118,8 +115,8 @@ abstract class AbstractGenericSortedSetTest {
         assertEquals(false, smallSet.contains(9))
         assertEquals(false, smallSet.contains(10))
 
-        assertFalse { smallSet.add(2) }
-        assertFalse { smallSet.add(9) }
+        assertThrows(IllegalArgumentException::class.java) { smallSet.add(2) }
+        assertThrows(IllegalArgumentException::class.java) { smallSet.add(9)  }
 
         val allSet = tree.subSet(-128, 128)
         for (i in 1..10)
@@ -147,8 +144,9 @@ abstract class AbstractGenericSortedSetTest {
         assertFalse(set.contains(0))
         tree.add(15)
         assertFalse(set.contains(15))
-        assertFalse { set.add(1) }
-        assertFalse { set.add(20) }
+        assertThrows(IllegalArgumentException::class.java) { set.add(1)  }
+        assertThrows(IllegalArgumentException::class.java) { set.add(20)  }
+
         assertEquals(11, set.size)
         assertEquals(14, tree.size)
     }

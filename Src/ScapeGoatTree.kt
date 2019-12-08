@@ -1,18 +1,17 @@
+import java.util.*
 import kotlin.math.ln
 import kotlin.math.max
 
 class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSortedSet<T>{
     override var root: Node<T>? = super.root
-    override var nodesNumber = super.nodesNumber
     private var q = 0     //counter, q, that maintains an upper-bound on the number of nodes.
 
-    init {
-        root = null
-        nodesNumber = 0
-    }
+    override var size: Int
+        get() = super.size
+        set(value) {}
+
 
     override fun height(): Int = subTreeSize(root, true)
-
 
     override fun checkInvariant(): Boolean =
             root?.let { checkInvariant(it) } ?: true
@@ -51,7 +50,7 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
         var current = root
         if (current == null) {
             root = newNode
-            nodesNumber++
+            size++
             q++
             return 0
         }
@@ -78,20 +77,40 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
             }
             depth++
         } while (!done)
-        nodesNumber++
+        size++
         q++
         return depth
     }
 
 
-
     override fun addAll(elements: Collection<T>): Boolean {
         if (elements.isEmpty())
             return false
+        else {
+            for (element in elements) {
+                add(element)
+            }
+        }
+        return true
+    }
 
+    override fun remove(element: T): Boolean {
+        val test = super.remove(element)
+        if(!test)
+            return false
+        if (2*size < q) {
+            rebuild(root)
+            q = size
+        }
+        return true
+    }
+
+    override fun removeAll(elements: Collection<T>): Boolean {
+        if (elements.isEmpty()) return false
         for (element in elements) {
-            val test = add(element)
-            if (!test)
+            if (contains(element)) {
+                remove(element)
+            } else
                 return false
         }
         return true
@@ -104,8 +123,8 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
         val leftNodeCount = subTreeSize(node.left)
         val rightNodeCount = subTreeSize(node.right)
 
-        return 1 + if (!checkHeight)  leftNodeCount + rightNodeCount // subTreeSize
-        else  max(leftNodeCount, rightNodeCount)    // height
+        return 1 + if (!checkHeight) leftNodeCount + rightNodeCount // subTreeSize
+        else max(leftNodeCount, rightNodeCount)    // height
     }
 
     /**Function to rebuild tree from node u */
@@ -142,7 +161,7 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
     }
 
     /** Function to build balanced nodes */
-    private fun buildBalanced(array: Array<Node<T>?>, index: Int, nodeSize: Int): Node<T>?{
+    private fun buildBalanced(array: Array<Node<T>?>, index: Int, nodeSize: Int): Node<T>? {
         if (nodeSize == 0)
             return null
         val m = nodeSize / 2
@@ -156,41 +175,48 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
     }
 
     /** Function for InOrder traversal */
-    fun inOrder() {
-        inOrder(root)
+    fun inorderIterator(): Iterator<T>? {
+        val queue: Queue<T> = LinkedList<T>()
+        inorderTraverse(queue, root)
+        return queue.iterator()
     }
 
-    private fun inOrder(r: Node<T>?) {
-        if (r != null) {
-            inOrder(r.left)
-            print(r.value.toString() + " ")
-            inOrder(r.right)
+    private fun inorderTraverse(queue: Queue<T>, node: Node<T>?) {
+        if (node != null) {
+            inorderTraverse(queue, node.left)
+            queue.add(node.value)
+            inorderTraverse(queue, node.right)
         }
     }
 
     /** Function for PreOrder traversal */
-    fun preOrder() {
-        preOrder(root)
+    fun preOrderIterator(): Iterator<T>? {
+        val queue: Queue<T> = LinkedList<T>()
+        preOrderTraverse(queue, root)
+        return queue.iterator()
     }
 
-    private fun preOrder(r: Node<T>?) {
-        if (r != null) {
-            print(r.value.toString() + " ")
-            preOrder(r.left)
-            preOrder(r.right)
+    private fun preOrderTraverse(queue: Queue<T>, node: Node<T>?) {
+        if (node != null) {
+            preOrderTraverse(queue, node.left)
+            queue.add(node.value)
+            preOrderTraverse(queue, node.right)
         }
     }
 
+
     /** Function for PostOrder traversal */
-    fun postOrder() {
-        postOrder(root)
+    fun postOrderIterator(): Iterator<T>? {
+        val queue: Queue<T> = LinkedList<T>()
+        postOrderTraverse(queue, root)
+        return queue.iterator()
     }
 
-    private fun postOrder(r: Node<T>?) {
-        if (r != null) {
-            postOrder(r.left)
-            postOrder(r.right)
-            print(r.value.toString() + " ")
+    private fun postOrderTraverse(queue: Queue<T>, node: Node<T>?) {
+        if (node != null) {
+            postOrderTraverse(queue, node.left)
+            postOrderTraverse(queue, node.right)
+            queue.add(node.value)
         }
     }
 }
