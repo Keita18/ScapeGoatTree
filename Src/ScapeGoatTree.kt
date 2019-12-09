@@ -3,12 +3,7 @@ import kotlin.math.ln
 import kotlin.math.max
 
 class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSortedSet<T>{
-    override var root: Node<T>? = super.root
     private var q = 0     //counter, q, that maintains an upper-bound on the number of nodes.
-
-    override var size: Int
-        get() = super.size
-        set(value) {}
 
 
     override fun height(): Int = subTreeSize(root, true)
@@ -129,21 +124,21 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
 
     /**Function to rebuild tree from node u */
     private fun rebuild(node: Node<T>?) {
-        val nodeSize = subTreeSize(node)
+        val nodeSize = subTreeSize(node) // size of subTree from scapeGoat node
         val parent = node!!.parent
-        val array = arrayOfNulls<Node<T>?>(nodeSize)
-        packIntoArray(node, array, 0)
+        val arrayOfSubTree = arrayOfNulls<Node<T>?>(nodeSize)
+        packIntoArray(node, arrayOfSubTree, 0)
         when {
-            parent == null -> {
-                root = buildBalanced(array, 0, nodeSize)
+            parent == null -> {  // only root should have a null parent
+                root = buildBalanced(arrayOfSubTree, 0, nodeSize)
                 root!!.parent = null
             }
             parent.right == node -> {
-                parent.right = buildBalanced(array, 0, nodeSize)
+                parent.right = buildBalanced(arrayOfSubTree, 0, nodeSize)
                 parent.right!!.parent = parent
             }
             else -> {
-                parent.left = buildBalanced(array, 0, nodeSize)
+                parent.left = buildBalanced(arrayOfSubTree, 0, nodeSize)
                 parent.left!!.parent = parent
             }
         }
@@ -155,9 +150,9 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
         if (node == null) {
             return i
         }
-        i = packIntoArray(node.left, array, i)
+        i = packIntoArray(node.left, array, i) // left subTree
         array[i++] = node
-        return packIntoArray(node.right, array, i)
+        return packIntoArray(node.right, array, i) // right subTree
     }
 
     /** Function to build balanced nodes */
