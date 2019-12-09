@@ -283,10 +283,10 @@ class MainFrame : JFrame() {
     private fun buttonFindActionPerformed() {
         try {
             val value = findValue.text
-            val node = tree!!.find(Integer.valueOf(value))
+            val test = tree!!.contains(value.toInt())
             findValue.text = ""
 
-            if (node == null) {
+            if (!test) {
                 JOptionPane.showMessageDialog(this, "This value doesn't exist in tree",
                         "INFORMATION", JOptionPane.INFORMATION_MESSAGE)
             } else {

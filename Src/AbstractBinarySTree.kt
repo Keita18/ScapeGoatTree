@@ -1,7 +1,7 @@
 import java.util.*
 
 abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
-    open var root: Node<T>? = null
+    var root: Node<T>? = null
 
     override fun clear() {
         root = null
@@ -160,10 +160,10 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
     }
 
     override fun iterator(): MutableIterator<T> {
-        return BinaryTreeIterator()
+        return BinaryTreeIterator(root)
     }
 
-    inner class BinaryTreeIterator internal constructor() : MutableIterator<T> {
+    inner class BinaryTreeIterator internal constructor(root: Node<T>?) : MutableIterator<T> {
 
         private var stack: Stack<Node<T>>
 

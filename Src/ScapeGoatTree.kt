@@ -1,12 +1,19 @@
 import java.util.*
+import kotlin.math.ceil
 import kotlin.math.ln
 import kotlin.math.max
 
-class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSortedSet<T>{
+
+open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSortedSet<T>{
     private var q = 0     //counter, q, that maintains an upper-bound on the number of nodes.
 
 
-    override fun height(): Int = subTreeSize(root, true)
+    override fun height(): Int = height(root)
+
+    private fun height(node: Node<T>?): Int {
+        if (node == null) return 0
+        return 1 + max(height(node.left), height(node.right))
+    }
 
     override fun checkInvariant(): Boolean =
             root?.let { checkInvariant(it) } ?: true
@@ -36,7 +43,24 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
             var scapeG = newNode.parent
             while (3 * subTreeSize(scapeG) <= 2 * subTreeSize(scapeG!!.parent))
                 scapeG = scapeG.parent
-            rebuild(scapeG.parent)
+            scapeG = scapeG.parent
+
+            val scapeGParent = scapeG?.parent
+            val scapegoatOnParentsLeft = scapeGParent != null && scapeGParent.left === scapeG
+            val rebuildSub = rebuildTree(subTreeSize(scapeG), scapeG!!)
+            rebuildSub?.parent = scapeGParent
+
+            if (scapeGParent != null) {
+                if (scapegoatOnParentsLeft) {
+                    scapeGParent.left = rebuildSub
+                } else {
+                    scapeGParent.right = rebuildSub
+                }
+            }
+            if (scapeG == root) {
+                root = rebuildSub
+            }
+
         }
         return depth >= 0
     }
@@ -79,14 +103,12 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
 
 
     override fun addAll(elements: Collection<T>): Boolean {
-        if (elements.isEmpty())
-            return false
-        else {
-            for (element in elements) {
-                add(element)
-            }
-        }
-        return true
+
+        if (elements.isEmpty()) return false
+
+        var modified = false
+        for (element in elements) if (add(element)) modified = true
+        return modified
     }
 
     override fun remove(element: T): Boolean {
@@ -94,7 +116,7 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
         if(!test)
             return false
         if (2*size < q) {
-            rebuild(root)
+            rebuildTree(size, root!!)
             q = size
         }
         return true
@@ -102,72 +124,73 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
 
     override fun removeAll(elements: Collection<T>): Boolean {
         if (elements.isEmpty()) return false
+
+        var modified = false
         for (element in elements) {
             if (contains(element)) {
                 remove(element)
-            } else
-                return false
+                modified = true
+            }
         }
-        return true
+        return modified
     }
 
 
     /** Function to count number of nodes */
-    private fun subTreeSize(node: Node<T>?, checkHeight: Boolean = false): Int {
-        if (node == null) return 0
-        val leftNodeCount = subTreeSize(node.left)
-        val rightNodeCount = subTreeSize(node.right)
-
-        return 1 + if (!checkHeight) leftNodeCount + rightNodeCount // subTreeSize
-        else max(leftNodeCount, rightNodeCount)    // height
+    private fun subTreeSize(node: Node<T>?): Int {
+        return if (node == null) 0
+        else 1 + subTreeSize(node.left) + subTreeSize(node.right)
     }
 
-    /**Function to rebuild tree from node u */
-    private fun rebuild(node: Node<T>?) {
-        val nodeSize = subTreeSize(node) // size of subTree from scapeGoat node
-        val parent = node!!.parent
-        val arrayOfSubTree = arrayOfNulls<Node<T>?>(nodeSize)
-        packIntoArray(node, arrayOfSubTree, 0)
-        when {
-            parent == null -> {  // only root should have a null parent
-                root = buildBalanced(arrayOfSubTree, 0, nodeSize)
-                root!!.parent = null
-            }
-            parent.right == node -> {
-                parent.right = buildBalanced(arrayOfSubTree, 0, nodeSize)
-                parent.right!!.parent = parent
-            }
-            else -> {
-                parent.left = buildBalanced(arrayOfSubTree, 0, nodeSize)
-                parent.left!!.parent = parent
+
+    private fun rebuildTree(size: Int, scapegoat: Node<T>): Node<T>? {
+        val nodes: MutableList<Node<T>> = ArrayList()
+        // flatten tree without recursion
+        var currentNode: Node<T>? = scapegoat
+        var done = false
+        val stack = Stack<Node<T>>()
+        while (!done) {
+            if (currentNode != null) {
+                stack.push(currentNode)
+                currentNode = currentNode.left
+            } else {
+                if (!stack.isEmpty()) {
+                    currentNode = stack.pop()
+                    nodes.add(currentNode)
+                    currentNode = currentNode.right
+                } else {
+                    done = true
+                }
             }
         }
+        // build tree from flattened list of nodes
+        return buildTree(nodes, 0, size - 1)
     }
 
-    /** Function to packIntoArray */
-    private fun packIntoArray(node: Node<T>?, array: Array<Node<T>?>, index: Int): Int {
-        var i = index
-        if (node == null) {
-            return i
-        }
-        i = packIntoArray(node.left, array, i) // left subTree
-        array[i++] = node
-        return packIntoArray(node.right, array, i) // right subTree
-    }
-
-    /** Function to build balanced nodes */
-    private fun buildBalanced(array: Array<Node<T>?>, index: Int, nodeSize: Int): Node<T>? {
-        if (nodeSize == 0)
+    /**
+     * Build balanced tree from flattened tree.
+     */
+    private fun buildTree(nodes: List<Node<T>>, start: Int, end: Int): Node<T>? {
+        val middle = ceil((start + end).toDouble() / 2.0).toInt()
+        if (start > end) {
             return null
-        val m = nodeSize / 2
-        array[index + m]?.left = buildBalanced(array, index, m)
-        if (array[index + m]?.left != null)
-            array[index + m]?.left!!.parent = array[index + m]
-        array[index + m]?.right = buildBalanced(array, index + m + 1, nodeSize - m - 1)
-        if (array[index + m]?.right != null)
-            array[index + m]?.right!!.parent = array[index + m]
-        return array[index + m]
+        }
+        // middle becomes root of subtree instead of scapegoat
+        val node: Node<T>? = nodes[middle]
+        // recursively get left and right nodes
+        val leftNode = buildTree(nodes, start, middle - 1)
+        node!!.left = leftNode
+        if (leftNode != null) {
+            leftNode.parent = node
+        }
+        val rightNode = buildTree(nodes, middle + 1, end)
+        node.right = rightNode
+        if (rightNode != null) {
+            rightNode.parent = node
+        }
+        return node
     }
+
 
     /** Function for InOrder traversal */
     fun inorderIterator(): Iterator<T>? {
@@ -214,4 +237,7 @@ class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSort
             queue.add(node.value)
         }
     }
+
+
+
 }
