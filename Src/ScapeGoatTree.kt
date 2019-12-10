@@ -46,7 +46,7 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
             scapeG = scapeG.parent
 
             val scapeGParent = scapeG?.parent
-            val scapegoatOnParentsLeft = scapeGParent != null && scapeGParent.left === scapeG
+            val scapegoatOnParentsLeft = scapeGParent != null && scapeGParent.left == scapeG
             val rebuildSub = rebuildTree(subTreeSize(scapeG), scapeG!!)
             rebuildSub?.parent = scapeGParent
 
@@ -113,13 +113,12 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
 
     override fun remove(element: T): Boolean {
         val test = super.remove(element)
-        if(!test)
-            return false
+
         if (2*size < q) {
             rebuildTree(size, root!!)
             q = size
         }
-        return true
+        return test
     }
 
     override fun removeAll(elements: Collection<T>): Boolean {
@@ -145,10 +144,10 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
 
     private fun rebuildTree(size: Int, scapegoat: Node<T>): Node<T>? {
         val nodes: MutableList<Node<T>> = ArrayList()
-        // flatten tree without recursion
         var currentNode: Node<T>? = scapegoat
         var done = false
         val stack = Stack<Node<T>>()
+
         while (!done) {
             if (currentNode != null) {
                 stack.push(currentNode)
