@@ -26,13 +26,21 @@ class GenericSortedSet<T : Comparable<T>>(
      * Memory Complexity O(1)
      */
     override fun first(): T? {
-        val iterator = delegate.iterator()
+        if (fromElement == null)
+            return delegate.first()
+        var root = delegate.root
         var currentFirst: T? = null
-        while (iterator.hasNext() && currentFirst == null) {
-            val nextElement = iterator.next()
-            if (checkInRange(nextElement) && this.contains(nextElement)) {
-                currentFirst = nextElement
+        while (root != null) {
+            if (checkInRange(root.value)) {
+                currentFirst = root.value
+                break
             }
+
+
+            root = if (root.value > fromElement)
+                root.left
+            else  root.right
+
         }
         return currentFirst
     }
@@ -43,15 +51,20 @@ class GenericSortedSet<T : Comparable<T>>(
      * Memory Complexity O(1)
      */
     override fun last(): T? {
-        val iterator = delegate.iterator()
-        var currentLast: T? = null
-        while (iterator.hasNext()) {
-            val nextElement = iterator.next()
-            if (checkInRange(nextElement) && this.contains(nextElement)) {
-                currentLast = nextElement
+        if (toElement == null)
+            return delegate.last()
+        var root = delegate.root
+        var currantLast = root?.value
+
+        while (root != null) {
+            if (checkInRange(root.value)) {
+                currantLast = root.value
             }
+
+            root = if (root.value > toElement) root.left
+            else  root.right
         }
-        return currentLast
+        return currantLast
     }
 
     /**
@@ -81,13 +94,30 @@ class GenericSortedSet<T : Comparable<T>>(
     }
 
     override fun iterator(): MutableIterator<T> = object : MutableIterator<T> {
-        private val delegate = this@GenericSortedSet.delegate.iterator()
+        private val delegate = this@GenericSortedSet.delegate
 
+        val commonParent = if (fromElement != null && toElement != null) lca(delegate.root, fromElement, toElement)
+        else if (toElement == null) lca(delegate.root, fromElement!!, delegate.last())
+        else lca(delegate.root, delegate.first(), toElement)
+
+        /** Function to find LCA of node1 and node2 */
+        fun lca(node: Node<T>?, fromElement: T, toElement: T): Node<T>? {
+            if (node == null) return null
+
+            // If (node1 and node2) < root -> we check left
+            if (node.value > fromElement && node.value > toElement) return lca(node.left, fromElement, toElement)
+
+            // If (node1 and node2) > root -> we check left
+            return if (node.value < fromElement && node.value < toElement) lca(node.right, fromElement, toElement)
+            else node
+        }
+
+        private val iterator = delegate.BinaryTreeIterator(commonParent)
         private var next: T? = null
 
         init {
-            while (delegate.hasNext()) {
-                val next = delegate.next()
+            while (iterator.hasNext()) {
+                val next = iterator.next()
                 if (checkInRange(next)) {
                     this.next = next
                     break
@@ -95,22 +125,14 @@ class GenericSortedSet<T : Comparable<T>>(
             }
         }
 
-        /**
-         * Time Complexity O(1)
-         * Memory Complexity O(1)
-         */
         override fun hasNext(): Boolean {
             return next != null
         }
 
-        /**
-         * Time Complexity O(1)
-         * Memory Complexity O(1)
-         */
         override fun next(): T {
             val result = next ?: throw NoSuchElementException()
-            next = if (delegate.hasNext()) {
-                val nextElement = delegate.next()
+            next = if (iterator.hasNext()) {
+                val nextElement = iterator.next()
                 if (checkInRange(nextElement))
                     nextElement
                 else null
@@ -118,13 +140,9 @@ class GenericSortedSet<T : Comparable<T>>(
             return result
         }
 
-        /**
-         * like in KtBinary tree
-         */
         override fun remove() {
-            delegate.remove()
+            iterator.remove()
         }
-
     }
 
     private fun checkInRange(value: T): Boolean {
