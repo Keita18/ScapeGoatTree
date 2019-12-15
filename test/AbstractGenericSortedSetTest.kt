@@ -168,7 +168,6 @@ abstract class AbstractGenericSortedSetTest {
             if (i >= fromElement)
                 ktSortedSetTail.add(i)
         }
-        println("toEle $toElement and fromEl $fromElement")
         val ktBinaryTreeTail = scapeGoatTree.tailSet(toElement)
         val subsetKtBinaryTree = scapeGoatTree.subSet(fromElement, toElement)
         val headKtBinaryTree = scapeGoatTree.headSet(toElement)

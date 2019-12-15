@@ -113,7 +113,8 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
 
     override fun remove(element: T): Boolean {
         val test = super.remove(element)
-
+        if (root == null)
+            return false
         if (2*size < q) {
             rebuildTree(size, root!!)
             q = size

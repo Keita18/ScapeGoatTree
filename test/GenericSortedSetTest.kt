@@ -11,38 +11,32 @@ class KotlinHeadSetTest : AbstractGenericSortedSetTest() {
     }
 
     @Test
-    @Tag("Normal")
     fun headSetTest() {
         doHeadSetTest()
     }
 
     @Test
-    @Tag("Hard")
     fun headSetRelationTest() {
         doHeadSetRelationTest()
     }
 
     @Test
-    @Tag("Normal")
     fun tailSetTest() {
         doTailSetTest()
     }
 
     @Test
-    @Tag("Hard")
     fun tailSetRelationTest() {
         doTailSetRelationTest()
     }
 
     @Test
-    @Tag("Impossible")
     fun subSetTest() {
         doSubSetTest()
         doSubSetRelationTest()
     }
 
     @Test
-    @Tag("Impossible")
     fun genericSortedSetTest() {
         doTestGenericSortedSetIterator()
     }

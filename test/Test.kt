@@ -30,7 +30,7 @@ class ScapeGoatTreeTesT {
         Assertions.assertEquals(1, tree.first())
         Assertions.assertEquals(20, tree.last())
 
-        val random = Random().nextInt (97561)
+        val random = Random().nextInt (100)
         tree.add(random)
         Assertions.assertEquals(10, tree.size)
         Assertions.assertTrue(tree.contains(random))
@@ -38,7 +38,6 @@ class ScapeGoatTreeTesT {
     }
 
     @Test
-    @Tag("Example")
     fun testAddSGT() {
         testAdd { createKotlinTree() }
     }
@@ -93,7 +92,6 @@ class ScapeGoatTreeTesT {
             }
         }
 
-        //~~~~~~~~//
         val last = list.max()
         val first = list.min()
         Assertions.assertEquals(last, binarySet.last())
@@ -116,7 +114,6 @@ class ScapeGoatTreeTesT {
     }
 
     @Test
-    @Tag("Normal")
     fun testRemoveSGT() {
         testRemove { createKotlinTree() }
         testRemove2 { createKotlinTree() }
@@ -156,7 +153,6 @@ class ScapeGoatTreeTesT {
     }
 
     @Test
-    @Tag("Normal")
     fun testIteratorSGT() {
         testIterator { createKotlinTree() }
     }
@@ -206,7 +202,6 @@ class ScapeGoatTreeTesT {
     }
 
     @Test
-    @Tag("Hard")
     fun testIteratorRemoveSGT() {
         testIteratorRemove { createKotlinTree() }
     }

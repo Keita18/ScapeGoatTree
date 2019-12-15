@@ -24,7 +24,7 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
         return closest != null && element.compareTo(closest.value) == 0
     }
 
-    fun find(value: T): Node<T>? =
+    private fun find(value: T): Node<T>? =
             root?.let { find(it, value) }
 
 
@@ -39,8 +39,8 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
 
     override fun containsAll(elements: Collection<T>): Boolean {
         if (elements.isEmpty()) return false
-        for (`object` in elements) {
-            if (!contains(`object`)) return false
+        for (element in elements) {
+            if (!contains(element)) return false
         }
         return true
     }
@@ -50,8 +50,9 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
      */
     override fun remove(element: T): Boolean {
         val toDelete: Node<T>? = find(element) ?: return false
-
-        if (toDelete!!.left == null || toDelete.right == null)
+        if (toDelete?.value != element)
+            return false
+        if (toDelete.left == null || toDelete.right == null)
             splice(toDelete)
         else {
             var minRight = toDelete.right
@@ -96,7 +97,7 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
                 list.add(element)
             }
         }
-        return addAll(list)
+        return removeAll(list)
     }
 
     /**
@@ -156,7 +157,7 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
      * of its elements
      */
     override fun comparator(): Comparator<in T>? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return null
     }
 
     override fun iterator(): MutableIterator<T> {
