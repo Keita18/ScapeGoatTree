@@ -4,9 +4,8 @@ import kotlin.math.ln
 import kotlin.math.max
 
 
-open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSortedSet<T>{
+open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), CheckableSortedSet<T> {
     private var q = 0     //counter, q, that maintains an upper-bound on the number of nodes.
-
 
     override fun height(): Int = height(root)
 
@@ -18,14 +17,12 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
     override fun checkInvariant(): Boolean =
             root?.let { checkInvariant(it) } ?: true
 
-
     private fun checkInvariant(node: Node<T>): Boolean {
         val left = node.left
         if (left != null && (left.value >= node.value || !checkInvariant(left))) return false
         val right = node.right
         return right == null || right.value > node.value && checkInvariant(right)
     }
-
 
     /**
      * Adds the specified element to the set.
@@ -73,6 +70,7 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
             q++
             return 0
         }
+
         var done = false
         var depth = 0
         do {
@@ -101,7 +99,6 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
         return depth
     }
 
-
     override fun addAll(elements: Collection<T>): Boolean {
 
         if (elements.isEmpty()) return false
@@ -115,7 +112,7 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
         val test = super.remove(element)
         if (root == null)
             return false
-        if (2*size < q) {
+        if (2 * size < q) {
             rebuildTree(size, root!!)
             q = size
         }
@@ -128,20 +125,20 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
         var modified = false
         for (element in elements) {
             if (contains(element)) {
-                remove(element)
+                super.remove(element)
                 modified = true
             }
         }
+        if (root != null)
+            rebuildTree(size, root!!)
         return modified
     }
-
 
     /** Function to count number of nodes */
     private fun subTreeSize(node: Node<T>?): Int {
         return if (node == null) 0
         else 1 + subTreeSize(node.left) + subTreeSize(node.right)
     }
-
 
     private fun rebuildTree(size: Int, scapegoat: Node<T>): Node<T>? {
         val nodes: MutableList<Node<T>> = ArrayList()
@@ -237,7 +234,4 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
             queue.add(node.value)
         }
     }
-
-
-
 }

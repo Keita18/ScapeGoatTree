@@ -27,7 +27,6 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
     private fun find(value: T): Node<T>? =
             root?.let { find(it, value) }
 
-
     private fun find(start: Node<T>, value: T): Node<T> {
         val comparison = value.compareTo(start.value)
         return when {
@@ -49,15 +48,15 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
      * fun to remove element from tree
      */
     override fun remove(element: T): Boolean {
-        val toDelete: Node<T>? = find(element) ?: return false
-        if (toDelete?.value != element)
+        val toDelete: Node<T> = find(element) ?: return false
+        if (toDelete.value != element)
             return false
         if (toDelete.left == null || toDelete.right == null)
             splice(toDelete)
         else {
             var minRight = toDelete.right
 
-            while (minRight!!.left != null) // time complexity in worst O(h)
+            while (minRight!!.left != null)
                 minRight = minRight.left
 
             toDelete.value = minRight.value
@@ -88,9 +87,9 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
         size--
     }
 
-
     override fun retainAll(elements: Collection<T>): Boolean {
-        if (elements.isEmpty()) return false
+        if (elements.isEmpty())
+            return false
         val list = ArrayList<T>()
         for (element in elements) {
             if (contains(element)) {

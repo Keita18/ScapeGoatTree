@@ -1,6 +1,5 @@
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Tag
 import java.util.*
 
 class ScapeGoatTreeTesT {
@@ -30,7 +29,7 @@ class ScapeGoatTreeTesT {
         Assertions.assertEquals(1, tree.first())
         Assertions.assertEquals(20, tree.last())
 
-        val random = Random().nextInt (100)
+        val random = Random().nextInt(100)
         tree.add(random)
         Assertions.assertEquals(10, tree.size)
         Assertions.assertTrue(tree.contains(random))

@@ -116,7 +116,7 @@ abstract class AbstractGenericSortedSetTest {
         assertEquals(false, smallSet.contains(10))
 
         assertThrows(IllegalArgumentException::class.java) { smallSet.add(2) }
-        assertThrows(IllegalArgumentException::class.java) { smallSet.add(9)  }
+        assertThrows(IllegalArgumentException::class.java) { smallSet.add(9) }
 
         val allSet = tree.subSet(-128, 128)
         for (i in 1..10)
@@ -144,8 +144,8 @@ abstract class AbstractGenericSortedSetTest {
         assertFalse(set.contains(0))
         tree.add(15)
         assertFalse(set.contains(15))
-        assertThrows(IllegalArgumentException::class.java) { set.add(1)  }
-        assertThrows(IllegalArgumentException::class.java) { set.add(20)  }
+        assertThrows(IllegalArgumentException::class.java) { set.add(1) }
+        assertThrows(IllegalArgumentException::class.java) { set.add(20) }
 
         assertEquals(11, set.size)
         assertEquals(14, tree.size)
@@ -157,7 +157,7 @@ abstract class AbstractGenericSortedSetTest {
         val ktSortedSetHead = sortedSetOf<Int>()
         val ktSortedSetSubset = sortedSetOf<Int>()
         val rand = Random()
-        val fromElement = rand.nextInt (24)
+        val fromElement = rand.nextInt(24)
         val toElement = rand.nextInt(29)
         for (i in 0..255 step fromElement) {
             scapeGoatTree.add(i)
@@ -191,7 +191,7 @@ abstract class AbstractGenericSortedSetTest {
             val treeSet = sortedSetOf<Int>()
             val sgtSubset = ScapeGoatTree<Int>().subSet(list.min()!!, list.max()!! + 1)
             val test = sgtSubset.iterator().hasNext()
-           assertFalse(test, "Iterator of empty set should not have next element")
+            assertFalse(test, "Iterator of empty set should not have next element")
             for (element in list) {
                 treeSet += element
                 sgtSubset += element
