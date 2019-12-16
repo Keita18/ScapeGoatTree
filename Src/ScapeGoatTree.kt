@@ -190,10 +190,13 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
 
 
     /** Function for InOrder traversal */
-    fun inorderIterator(): Iterator<T>? {
+    fun inorderIterator(value: T? = root?.value): Queue<T>? {
+        if (value == null)
+            return null
         val queue: Queue<T> = LinkedList<T>()
-        inorderTraverse(queue, root)
-        return queue.iterator()
+        val node = Node(value)
+        inorderTraverse(queue, node)
+        return queue
     }
 
     private fun inorderTraverse(queue: Queue<T>, node: Node<T>?) {
@@ -205,10 +208,13 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
     }
 
     /** Function for PreOrder traversal */
-    fun preOrderIterator(): Iterator<T>? {
+    fun preOrderIterator(value: T? = root?.value): Queue<T>? {
+        if (value == null)
+            return null
         val queue: Queue<T> = LinkedList<T>()
-        preOrderTraverse(queue, root)
-        return queue.iterator()
+        val node = Node(value)
+        preOrderTraverse(queue, node)
+        return queue
     }
 
     private fun preOrderTraverse(queue: Queue<T>, node: Node<T>?) {
@@ -221,10 +227,13 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
 
 
     /** Function for PostOrder traversal */
-    fun postOrderIterator(): Iterator<T>? {
+    fun postOrderIterator(value: T? = root?.value): Queue<T>? {
+        if (value == null)
+            return null
         val queue: Queue<T> = LinkedList<T>()
-        postOrderTraverse(queue, root)
-        return queue.iterator()
+        val node = Node(value)
+        postOrderTraverse(queue, node)
+        return queue
     }
 
     private fun postOrderTraverse(queue: Queue<T>, node: Node<T>?) {
