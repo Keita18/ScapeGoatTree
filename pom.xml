@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.spbstu</groupId>
-    <artifactId>kfirst</artifactId>
+    <artifactId>scapeGoat</artifactId>
     <version>0.1.14</version>
 
     <properties>
@@ -65,7 +65,7 @@
         </dependency>
     </dependencies>
     <build>
-        <sourceDirectory>src</sourceDirectory>
+        <sourceDirectory>Src</sourceDirectory>
         <testSourceDirectory>test</testSourceDirectory>
         <plugins>
             <plugin>
@@ -120,30 +120,6 @@
                 <artifactId>kfirst-runner-plugin</artifactId>
                 <groupId>org.jetbrains.research</groupId>
                 <version>0.1.17</version>
-                <configuration>
-                    <packages>
-                        <package>lesson1.task1</package>
-
-                        <package>lesson2.task1</package>
-                        <package>lesson2.task2</package>
-
-                        <package>lesson3.task1</package>
-                        <package>lesson4.task1</package>
-                        <package>lesson5.task1</package>
-                        <package>lesson6.task1</package>
-                        <package>lesson7.task1</package>
-
-                        <package>lesson8.task1</package>
-                        <package>lesson8.task2</package>
-                        <package>lesson8.task3</package>
-
-                        <package>lesson9.task1</package>
-                        <package>lesson9.task2</package>
-
-                        <package>lesson10.task1</package>
-                        <package>lesson10.task2</package>
-                    </packages>
-                </configuration>
             </plugin>
         </plugins>
     </build>

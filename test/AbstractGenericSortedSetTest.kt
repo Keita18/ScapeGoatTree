@@ -34,41 +34,38 @@ abstract class AbstractGenericSortedSetTest {
 
     protected fun doHeadSetTest() {
         var set: SortedSet<Int> = tree.headSet(5)
-        assertEquals(true, set.contains(1))
-        assertEquals(true, set.contains(2))
-        assertEquals(true, set.contains(3))
-        assertEquals(true, set.contains(4))
-        assertEquals(false, set.contains(5))
-        assertEquals(false, set.contains(6))
-        assertEquals(false, set.contains(7))
-        assertEquals(false, set.contains(8))
-        assertEquals(false, set.contains(9))
-        assertEquals(false, set.contains(10))
-
+        assertTrue(set.contains(1))
+        assertTrue(set.contains(2))
+        assertTrue(set.contains(3))
+        assertTrue(set.contains(4))
+        assertFalse(set.contains(5))
+        assertFalse(set.contains(6))
+        assertFalse(set.contains(7))
+        assertFalse(set.contains(8))
+        assertFalse(set.contains(9))
+        assertFalse(set.contains(10))
 
         set = tree.headSet(127)
         for (i in 1..10)
             assertEquals(true, set.contains(i))
-
     }
 
     protected fun doTailSetTest() {
         var set: SortedSet<Int> = tree.tailSet(5)
-        assertEquals(false, set.contains(1))
-        assertEquals(false, set.contains(2))
-        assertEquals(false, set.contains(3))
-        assertEquals(false, set.contains(4))
-        assertEquals(true, set.contains(5))
-        assertEquals(true, set.contains(6))
-        assertEquals(true, set.contains(7))
-        assertEquals(true, set.contains(8))
-        assertEquals(true, set.contains(9))
-        assertEquals(true, set.contains(10))
+        assertFalse(set.contains(1))
+        assertFalse(set.contains(2))
+        assertFalse(set.contains(3))
+        assertFalse(set.contains(4))
+        assertTrue(set.contains(5))
+        assertTrue(set.contains(6))
+        assertTrue(set.contains(7))
+        assertTrue(set.contains(8))
+        assertTrue(set.contains(9))
+        assertTrue(set.contains(10))
 
         set = tree.tailSet(-128)
         for (i in 1..10)
-            assertEquals(true, set.contains(i))
-
+            assertTrue(set.contains(i))
     }
 
     protected fun doHeadSetRelationTest() {
@@ -104,16 +101,16 @@ abstract class AbstractGenericSortedSetTest {
 
     protected fun doSubSetTest() {
         val smallSet: SortedSet<Int> = tree.subSet(3, 8)
-        assertEquals(false, smallSet.contains(1))
-        assertEquals(false, smallSet.contains(2))
-        assertEquals(true, smallSet.contains(3))
-        assertEquals(true, smallSet.contains(4))
-        assertEquals(true, smallSet.contains(5))
-        assertEquals(true, smallSet.contains(6))
-        assertEquals(true, smallSet.contains(7))
-        assertEquals(false, smallSet.contains(8))
-        assertEquals(false, smallSet.contains(9))
-        assertEquals(false, smallSet.contains(10))
+        assertFalse(smallSet.contains(1))
+        assertFalse(smallSet.contains(2))
+        assertTrue(smallSet.contains(3))
+        assertTrue(smallSet.contains(4))
+        assertTrue(smallSet.contains(5))
+        assertTrue(smallSet.contains(6))
+        assertTrue(smallSet.contains(7))
+        assertFalse(smallSet.contains(8))
+        assertFalse(smallSet.contains(9))
+        assertFalse(smallSet.contains(10))
 
         assertThrows(IllegalArgumentException::class.java) { smallSet.add(2) }
         assertThrows(IllegalArgumentException::class.java) { smallSet.add(9) }

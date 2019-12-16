@@ -1,39 +1,39 @@
-import org.junit.Test
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import java.util.*
 
 class ScapeGoatTreeTesT {
     private fun testAdd(create: () -> CheckableSortedSet<Int>) {
         val tree = create()
-        Assertions.assertEquals(0, tree.size)
-        Assertions.assertFalse(tree.contains(5))
+        assertEquals(0, tree.size)
+        assertFalse(tree.contains(5))
         tree.add(10)
         tree.add(5)
         tree.add(7)
         tree.add(10)
-        Assertions.assertEquals(3, tree.size)
-        Assertions.assertTrue(tree.contains(5))
+        assertEquals(3, tree.size)
+        assertTrue(tree.contains(5))
         tree.add(3)
         tree.add(1)
         tree.add(3)
         tree.add(4)
-        Assertions.assertEquals(6, tree.size)
-        Assertions.assertFalse(tree.contains(8))
+        assertEquals(6, tree.size)
+        assertFalse(tree.contains(8))
         tree.add(8)
         tree.add(15)
         tree.add(15)
         tree.add(20)
-        Assertions.assertEquals(9, tree.size)
-        Assertions.assertTrue(tree.contains(8))
-        Assertions.assertTrue(tree.checkInvariant())
-        Assertions.assertEquals(1, tree.first())
-        Assertions.assertEquals(20, tree.last())
+        assertEquals(9, tree.size)
+        assertTrue(tree.contains(8))
+        assertTrue(tree.checkInvariant())
+        assertEquals(1, tree.first())
+        assertEquals(20, tree.last())
 
         val random = Random().nextInt(100)
         tree.add(random)
-        Assertions.assertEquals(10, tree.size)
-        Assertions.assertTrue(tree.contains(random))
-        Assertions.assertEquals(random, tree.last())
+        assertEquals(10, tree.size)
+        assertTrue(tree.contains(random))
+        assertEquals(random, tree.last())
     }
 
     @Test
@@ -51,7 +51,7 @@ class ScapeGoatTreeTesT {
                 list.add(random.nextInt(100))
             }
             val binarySet = create()
-            Assertions.assertFalse(binarySet.remove(42))
+            assertFalse(binarySet.remove(42))
             for (element in list) {
                 binarySet += element
             }
@@ -59,20 +59,20 @@ class ScapeGoatTreeTesT {
             val toRemove = list[random.nextInt(list.size)]
             val oldSize = binarySet.size
 
-            Assertions.assertTrue(binarySet.remove(toRemove))
-            Assertions.assertEquals(oldSize - 1, binarySet.size)
+            assertTrue(binarySet.remove(toRemove))
+            assertEquals(oldSize - 1, binarySet.size)
             println("Removing $toRemove from $list")
             for (element in list) {
                 val inn = element != toRemove
-                Assertions.assertEquals(
+                assertEquals(
                         inn, element in binarySet,
                         "$element should be ${if (inn) "in" else "not in"} tree"
                 )
             }
             list.remove(toRemove)
 
-            Assertions.assertTrue(binarySet.checkInvariant(), "Binary tree invariant is false after tree.remove()")
-            Assertions.assertTrue(
+            assertTrue(binarySet.checkInvariant(), "Binary tree invariant is false after tree.remove()")
+            assertTrue(
                     binarySet.height() <= originalHeight,
                     "After removal of $toRemove from $list binary tree height increased"
             )
@@ -93,12 +93,12 @@ class ScapeGoatTreeTesT {
 
         val last = list.max()
         val first = list.min()
-        Assertions.assertEquals(last, binarySet.last())
-        Assertions.assertEquals(first, binarySet.first())
+        assertEquals(last, binarySet.last())
+        assertEquals(first, binarySet.first())
 
         binarySet.remove(last)
-        Assertions.assertFalse(binarySet.contains(last))
-        Assertions.assertTrue(binarySet.contains(first))
+        assertFalse(binarySet.contains(last))
+        assertTrue(binarySet.contains(first))
 
         var i = 0
         val oldSize = binarySet.size
@@ -107,9 +107,9 @@ class ScapeGoatTreeTesT {
             if (binarySet.contains(j)) {
                 binarySet.remove(j)
                 i++
-                Assertions.assertTrue(list.contains(j))
+                assertTrue(list.contains(j))
             }
-        Assertions.assertEquals(oldSize - i, binarySet.size)
+        assertEquals(oldSize - i, binarySet.size)
     }
 
     @Test
@@ -127,7 +127,7 @@ class ScapeGoatTreeTesT {
             }
             val treeSet = TreeSet<Int>()
             val binarySet = create()
-            Assertions.assertFalse(binarySet.iterator().hasNext(), "Iterator of empty set should not have next element")
+            assertFalse(binarySet.iterator().hasNext(), "Iterator of empty set should not have next element")
             for (element in list) {
                 treeSet += element
                 binarySet += element
@@ -136,14 +136,14 @@ class ScapeGoatTreeTesT {
             val binaryIt = binarySet.iterator()
             println("Traversing $list")
             while (treeIt.hasNext()) {
-                Assertions.assertEquals(treeIt.next(), binaryIt.next(), "Incorrect iterator state while iterating $treeSet")
+                assertEquals(treeIt.next(), binaryIt.next(), "Incorrect iterator state while iterating $treeSet")
             }
             val iterator1 = binarySet.iterator()
             val iterator2 = binarySet.iterator()
             println("Consistency check for hasNext $list")
             // hasNext call should not affect iterator position
             while (iterator1.hasNext()) {
-                Assertions.assertEquals(
+                assertEquals(
                         iterator2.next(), iterator1.next(),
                         "Call of iterator.hasNext() changes its state while iterating $treeSet"
                 )
@@ -182,21 +182,21 @@ class ScapeGoatTreeTesT {
                     iterator.remove()
                 }
             }
-            Assertions.assertEquals(
+            assertEquals(
                     0, counter,
                     "Iterator.remove() of $toRemove from $list changed iterator position: " +
                             "we've traversed a total of ${binarySet.size - counter} elements instead of ${binarySet.size}"
             )
             println()
-            Assertions.assertEquals(treeSet.size, binarySet.size, "Size is incorrect after removal of $toRemove from $list")
+            assertEquals(treeSet.size, binarySet.size, "Size is incorrect after removal of $toRemove from $list")
             for (element in list) {
                 val inn = element != toRemove
-                Assertions.assertEquals(
+                assertEquals(
                         inn, element in binarySet,
                         "$element should be ${if (inn) "in" else "not in"} tree"
                 )
             }
-            Assertions.assertTrue(binarySet.checkInvariant(), "Binary tree invariant is false after tree.iterator().remove()")
+            assertTrue(binarySet.checkInvariant(), "Binary tree invariant is false after tree.iterator().remove()")
         }
     }
 
