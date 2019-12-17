@@ -131,6 +131,7 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
         }
         if (root != null)
             rebuildTree(size, root!!)
+
         return modified
     }
 
