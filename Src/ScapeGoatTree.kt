@@ -120,8 +120,8 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
     }
 
     override fun removeAll(elements: Collection<T>): Boolean {
-        if (elements.isEmpty()) return false
-
+        if (elements.isEmpty())
+            return false
         var modified = false
         for (element in elements) {
             if (contains(element)) {
@@ -129,8 +129,19 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
                 modified = true
             }
         }
-        if (root != null)
-            rebuildTree(size, root!!)
+        return modified
+    }
+
+    override fun retainAll(elements: Collection<T>): Boolean {
+        if (elements.isEmpty())
+            return false
+        var modified = false
+        for (element in this) {
+            if (!elements.contains(element)) {
+                super.remove(element)
+                modified = true
+            }
+        }
         return modified
     }
 

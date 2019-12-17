@@ -87,18 +87,6 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
         size--
     }
 
-    override fun retainAll(elements: Collection<T>): Boolean {
-        if (elements.isEmpty())
-            return false
-        val list = ArrayList<T>()
-        for (element in elements) {
-            if (contains(element)) {
-                list.add(element)
-            }
-        }
-        return removeAll(list)
-    }
-
     /**
      * Returns the first (lowest) element currently in this set.
      *
