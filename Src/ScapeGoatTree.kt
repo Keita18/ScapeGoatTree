@@ -194,7 +194,7 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
         if (value == null)
             return null
         val queue: Queue<T> = LinkedList<T>()
-        val node = Node(value)
+        val node = find(value)
         inorderTraverse(queue, node)
         return queue
     }
@@ -212,7 +212,7 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
         if (value == null)
             return null
         val queue: Queue<T> = LinkedList<T>()
-        val node = Node(value)
+        val node = find(value)
         preOrderTraverse(queue, node)
         return queue
     }
@@ -231,7 +231,7 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
         if (value == null)
             return null
         val queue: Queue<T> = LinkedList<T>()
-        val node = Node(value)
+        val node = find(value)
         postOrderTraverse(queue, node)
         return queue
     }

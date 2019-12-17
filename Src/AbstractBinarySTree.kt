@@ -24,7 +24,7 @@ abstract class AbstractBinarySTree<T : Comparable<T>> : SortedSet<T> {
         return closest != null && element.compareTo(closest.value) == 0
     }
 
-    private fun find(value: T): Node<T>? =
+    fun find(value: T): Node<T>? =
             root?.let { find(it, value) }
 
     private fun find(start: Node<T>, value: T): Node<T> {

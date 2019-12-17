@@ -6,6 +6,7 @@ abstract class AbstractGenericSortedSetTest {
     private lateinit var randomTree: SortedSet<Int>
     private val randomTreeSize = 1000
     private val randomValues = mutableListOf<Int>()
+    private val treeSet = TreeSet<Int>()
 
     protected fun fillTree(create: () -> SortedSet<Int>) {
         this.tree = create()
@@ -29,8 +30,10 @@ abstract class AbstractGenericSortedSetTest {
                 randomValues.add(randomValue)
             }
         }
-    }
 
+        for (element in tree)
+            treeSet += element
+    }
 
     protected fun doHeadSetTest() {
         var set: SortedSet<Int> = tree.headSet(5)
@@ -46,8 +49,10 @@ abstract class AbstractGenericSortedSetTest {
         assertFalse(set.contains(10))
 
         set = tree.headSet(127)
+        val setTreeSet = treeSet.headSet(127)
         for (i in 1..10)
-            assertEquals(true, set.contains(i))
+            assertTrue(set.contains(i))
+        assertEquals(set, setTreeSet)
     }
 
     protected fun doTailSetTest() {
@@ -64,23 +69,30 @@ abstract class AbstractGenericSortedSetTest {
         assertTrue(set.contains(10))
 
         set = tree.tailSet(-128)
+        val setTreeSet = treeSet.tailSet(-128)
         for (i in 1..10)
             assertTrue(set.contains(i))
+        assertEquals(set, setTreeSet)
     }
 
     protected fun doHeadSetRelationTest() {
         val set: SortedSet<Int> = tree.headSet(7)
-        assertEquals(6, set.size)
-        assertEquals(10, tree.size)
+        val setTreeSet = treeSet.headSet(7)
+        assertEquals(setTreeSet.size, set.size)
+        assertEquals(treeSet.size, tree.size)
         tree.add(0)
+        treeSet.add(0)
         assertTrue(set.contains(0))
+        assertEquals(setTreeSet.contains(0), set.contains(0))
         set.add(-2)
-        assertTrue(tree.contains(-2))
+        setTreeSet.add(-2)
+        assertEquals(treeSet.contains(-2), tree.contains(-2))
         tree.add(12)
-        assertFalse(set.contains(12))
+        treeSet.add(12)
+        assertEquals(setTreeSet.contains(12), set.contains(12))
         assertThrows(IllegalArgumentException::class.java) { set.add(8) }
-        assertEquals(8, set.size)
-        assertEquals(13, tree.size)
+        assertEquals(setTreeSet.size, set.size)
+        assertEquals(treeSet.size, tree.size)
     }
 
     protected fun doTailSetRelationTest() {
@@ -115,9 +127,16 @@ abstract class AbstractGenericSortedSetTest {
         assertThrows(IllegalArgumentException::class.java) { smallSet.add(2) }
         assertThrows(IllegalArgumentException::class.java) { smallSet.add(9) }
 
+        val smallTreeSet = treeSet.subSet(3, 8)
+        for (element in smallTreeSet)
+            assertTrue(smallSet.contains(element))
+        assertEquals(smallTreeSet.size, smallSet.size)
+
         val allSet = tree.subSet(-128, 128)
         for (i in 1..10)
             assertEquals(true, allSet.contains(i))
+        val allTreeSet = treeSet.subSet(-128, 128)
+        assertEquals(allTreeSet, allSet)
 
         val random = Random()
         val toElement = random.nextInt(randomTreeSize) + 1
@@ -131,8 +150,10 @@ abstract class AbstractGenericSortedSetTest {
 
     protected fun doSubSetRelationTest() {
         val set: SortedSet<Int> = tree.subSet(2, 15)
-        assertEquals(9, set.size)
-        assertEquals(10, tree.size)
+        val setTreeSet = treeSet.subSet(2, 15)
+        assertEquals(setTreeSet.size, set.size)
+        assertEquals(treeSet.size, tree.size)
+        assertEquals(setTreeSet, set)
         tree.add(11)
         assertTrue(set.contains(11))
         set.add(14)
@@ -141,11 +162,13 @@ abstract class AbstractGenericSortedSetTest {
         assertFalse(set.contains(0))
         tree.add(15)
         assertFalse(set.contains(15))
+        setTreeSet.addAll(listOf(11, 14))
+        assertEquals(setTreeSet, set)
         assertThrows(IllegalArgumentException::class.java) { set.add(1) }
         assertThrows(IllegalArgumentException::class.java) { set.add(20) }
 
-        assertEquals(11, set.size)
-        assertEquals(14, tree.size)
+        assertEquals(setTreeSet.size, set.size)
+        assertEquals(treeSet.size + 2, tree.size)
     }
 
     protected fun doTestGenericSortedSetIterator() {
@@ -175,9 +198,6 @@ abstract class AbstractGenericSortedSetTest {
         assertEquals(ktSortedSetHead.last(), headKtBinaryTree.last())
         assertEquals(ktSortedSetTail.last(), ktBinaryTreeTail.last())
         assertEquals(subsetKtBinaryTree.size, ktSortedSetSubset.size)
-        assertTrue(
-                subsetKtBinaryTree.contains(ktSortedSetSubset.max())
-        )
 
         val random = Random()
         for (iteration in 1..100) {
