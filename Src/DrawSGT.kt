@@ -13,7 +13,9 @@ class DrawSGT(private var binaryTree: ScapeGoatTree<Int>?) : JPanel() {
 
     override fun paintComponent(g: Graphics) {
         super.paintComponent(g)
-        drawTree(g, 0, width, 0, height / binaryTree!!.height(), 0, 0, binaryTree!!.root)
+        if (binaryTree?.height() != 0)
+            drawTree(g, 0, width, 0, height / binaryTree!!.height(), 0, 0, binaryTree!!.root)
+        else this.repaint()
     }
 
     private fun drawTree(

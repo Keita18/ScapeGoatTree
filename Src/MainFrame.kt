@@ -29,7 +29,8 @@ class MainFrame : JFrame() {
                     }
                 }
             })
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     private fun initComponents() {

@@ -39,7 +39,7 @@ class GenericSortedSet<T : Comparable<T>>(
 
             root = if (root.value > fromElement)
                 root.left
-            else  root.right
+            else root.right
 
         }
         return currentFirst
@@ -62,7 +62,7 @@ class GenericSortedSet<T : Comparable<T>>(
             }
 
             root = if (root.value > toElement) root.left
-            else  root.right
+            else root.right
         }
         return currantLast
     }

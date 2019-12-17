@@ -129,6 +129,8 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
                 modified = true
             }
         }
+        if (root != null)
+            rebuildTree(size, root!!)
         return modified
     }
 
@@ -142,6 +144,8 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
                 modified = true
             }
         }
+        if (root != null)
+            rebuildTree(size, root!!)
         return modified
     }
 

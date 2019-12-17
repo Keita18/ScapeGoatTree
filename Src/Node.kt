@@ -1,4 +1,3 @@
-
 class Node<T>(var value: T) {
 
     var left: Node<T>? = null
