@@ -206,57 +206,53 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
 
 
     /** Function for InOrder traversal */
-    fun inorderIterator(value: T? = root?.value): Queue<T>? {
-        if (value == null)
-            return null
-        val queue: Queue<T> = LinkedList<T>()
-        val node = find(value)
-        inorderTraverse(queue, node)
-        return queue
+    fun inorderIterator(value: (T) -> Any) {
+        inorderTraverse(value, root)
     }
 
-    private fun inorderTraverse(queue: Queue<T>, node: Node<T>?) {
+    private fun inorderTraverse(value: (T) -> Any, node: Node<T>?) {
         if (node != null) {
-            inorderTraverse(queue, node.left)
-            queue.add(node.value)
-            inorderTraverse(queue, node.right)
+            inorderTraverse(value, node.left)
+            value.invoke(node.value)
+            inorderTraverse(value, node.right)
         }
     }
 
+
     /** Function for PreOrder traversal */
-    fun preOrderIterator(value: T? = root?.value): Queue<T>? {
-        if (value == null)
-            return null
-        val queue: Queue<T> = LinkedList<T>()
-        val node = find(value)
-        preOrderTraverse(queue, node)
-        return queue
+    fun preOrderIterator(value: (T) -> Any) {
+        preOrderTraverse(value, root)
     }
 
-    private fun preOrderTraverse(queue: Queue<T>, node: Node<T>?) {
+    private fun preOrderTraverse(value: (T) -> Any, node: Node<T>?) {
         if (node != null) {
-            preOrderTraverse(queue, node.left)
-            queue.add(node.value)
-            preOrderTraverse(queue, node.right)
+            value.invoke(node.value)
+            preOrderTraverse(value, node.left)
+            preOrderTraverse(value, node.right)
         }
     }
 
 
     /** Function for PostOrder traversal */
-    fun postOrderIterator(value: T? = root?.value): Queue<T>? {
-        if (value == null)
-            return null
-        val queue: Queue<T> = LinkedList<T>()
-        val node = find(value)
-        postOrderTraverse(queue, node)
-        return queue
+    fun postOrderIterator(value: (T) -> Any) {
+        postOrderTraverse(value, root)
     }
 
-    private fun postOrderTraverse(queue: Queue<T>, node: Node<T>?) {
+    private fun postOrderTraverse(value: (T) -> Any, node: Node<T>?) {
         if (node != null) {
-            postOrderTraverse(queue, node.left)
-            postOrderTraverse(queue, node.right)
-            queue.add(node.value)
+            postOrderTraverse(value, node.left)
+            postOrderTraverse(value, node.right)
+            value.invoke(node.value)
         }
     }
+}
+
+fun main(args: Array<String>) {
+
+    val scapegoat = ScapeGoatTree<Int>()
+
+    for (i in 1..16)
+        scapegoat.add(i)
+
+    scapegoat.postOrderIterator { node -> if (node in 3..5) println(node) }
 }
