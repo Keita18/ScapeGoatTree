@@ -22,51 +22,58 @@ abstract class AbstractScapeGoatTreeTest {
 
     protected fun testAdd(create: () -> CheckableSortedSet<Int>) {
         val tree = create()
+        val treeSet = TreeSet<Int>()
         assertEquals(0, tree.size)
         assertFalse(tree.contains(5))
         tree.add(10)
         tree.add(5)
         tree.add(7)
         tree.add(10)
-        assertEquals(3, tree.size)
+        treeSet.addAll(tree)
+        assertEquals(treeSet.size, tree.size)
         assertTrue(tree.contains(5))
         tree.add(3)
         tree.add(1)
         tree.add(3)
         tree.add(4)
-        assertEquals(6, tree.size)
+        treeSet.addAll(tree)
+        assertEquals(treeSet.size, tree.size)
         assertFalse(tree.contains(8))
         tree.add(8)
         tree.add(15)
         tree.add(15)
         tree.add(20)
-        assertEquals(9, tree.size)
+        treeSet.addAll(tree)
+        assertEquals(treeSet.size, tree.size)
         assertTrue(tree.contains(8))
         assertTrue(tree.checkInvariant())
-        assertEquals(1, tree.first())
-        assertEquals(20, tree.last())
+        assertEquals(treeSet.first(), tree.first())
+        assertEquals(treeSet.last(), tree.last())
     }
 
     protected fun <T : Comparable<T>> createKotlinTree(): CheckableSortedSet<T> = ScapeGoatTree()
 
     protected fun testRemove() {
         val random = Random()
+        val treeSet = TreeSet<Int>()
+        treeSet.addAll(list)
         val scapeGoatSet = scapeGoatTree
         val originalHeight = scapeGoatSet.height()
         val toRemove = list[random.nextInt(list.size)]
-        val oldSize = scapeGoatSet.size
+        val oldSize = treeSet.size
 
+        assertEquals(treeSet.size, scapeGoatSet.size)
         assertTrue(scapeGoatSet.remove(toRemove))
         assertEquals(oldSize - 1, scapeGoatSet.size)
         println("Removing $toRemove from $list")
-        for (element in list) {
+        for (element in treeSet) {
             val inn = element != toRemove
             assertEquals(
                     inn, element in scapeGoatSet,
                     "$element should be ${if (inn) "in" else "not in"} tree"
             )
         }
-        list.remove(toRemove)
+        treeSet.remove(toRemove)
 
         assertTrue(scapeGoatSet.checkInvariant(), "Binary tree invariant is false after tree.remove()")
         assertTrue(
@@ -77,9 +84,10 @@ abstract class AbstractScapeGoatTreeTest {
 
     protected fun testRemove2() {
         val scapeGoatSet = scapeGoatTree
-
-        val last = list.max()
-        val first = list.min()
+        val treeSet = TreeSet<Int>()
+        treeSet.addAll(list)
+        val last = treeSet.last()
+        val first = treeSet.first()
         assertEquals(last, scapeGoatSet.last())
         assertEquals(first, scapeGoatSet.first())
         scapeGoatSet.remove(last)
@@ -93,7 +101,7 @@ abstract class AbstractScapeGoatTreeTest {
             if (scapeGoatSet.contains(j)) {
                 scapeGoatSet.remove(j)
                 i++
-                assertTrue(list.contains(j))
+                assertTrue(treeSet.contains(j))
             }
         assertEquals(oldSize - i, scapeGoatSet.size)
     }

@@ -246,13 +246,3 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
         }
     }
 }
-
-fun main(args: Array<String>) {
-
-    val scapegoat = ScapeGoatTree<Int>()
-
-    for (i in 1..16)
-        scapegoat.add(i)
-
-    scapegoat.postOrderIterator { node -> if (node in 3..5) println(node) }
-}
