@@ -206,11 +206,11 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
 
 
     /** Function for InOrder traversal */
-    fun inorderIterator(value: (T) -> Any) {
+    fun inorderIterator(value: (T) -> Unit) {
         inorderTraverse(value, root)
     }
 
-    private fun inorderTraverse(value: (T) -> Any, node: Node<T>?) {
+    private fun inorderTraverse(value: (T) -> Unit, node: Node<T>?) {
         if (node != null) {
             inorderTraverse(value, node.left)
             value.invoke(node.value)
@@ -220,11 +220,11 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
 
 
     /** Function for PreOrder traversal */
-    fun preOrderIterator(value: (T) -> Any) {
+    fun preOrderIterator(value: (T) -> Unit) {
         preOrderTraverse(value, root)
     }
 
-    private fun preOrderTraverse(value: (T) -> Any, node: Node<T>?) {
+    private fun preOrderTraverse(value: (T) -> Unit, node: Node<T>?) {
         if (node != null) {
             value.invoke(node.value)
             preOrderTraverse(value, node.left)
@@ -234,11 +234,11 @@ open class ScapeGoatTree<T : Comparable<T>> : AbstractBinarySTree<T>(), Checkabl
 
 
     /** Function for PostOrder traversal */
-    fun postOrderIterator(value: (T) -> Any) {
+    fun postOrderIterator(value: (T) -> Unit) {
         postOrderTraverse(value, root)
     }
 
-    private fun postOrderTraverse(value: (T) -> Any, node: Node<T>?) {
+    private fun postOrderTraverse(value: (T) -> Unit, node: Node<T>?) {
         if (node != null) {
             postOrderTraverse(value, node.left)
             postOrderTraverse(value, node.right)
